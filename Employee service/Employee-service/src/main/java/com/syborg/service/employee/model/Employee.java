@@ -7,10 +7,12 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "employee")
-@Data                       // Generates getters, setters, toString, equals, hashCode
-@NoArgsConstructor          // No-args constructor
-@AllArgsConstructor         // All-args constructor
-@Builder                    // Builder pattern
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+@Setter
 public class Employee {
 
     @Id
