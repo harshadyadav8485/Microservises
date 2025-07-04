@@ -4,18 +4,18 @@ import com.syborg.service.employee.exception.EmployeeNotFoundException;
 import com.syborg.service.employee.exceptionDto.ErrorDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import jakarta.validation.ConstraintViolationException;
 
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-public class GlobalException {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(EmployeeNotFoundException.class)
     public ResponseEntity<ErrorDto> handleEmployeeNotFound(EmployeeNotFoundException ex, HttpServletRequest request) {
@@ -57,22 +57,21 @@ public class GlobalException {
         return ResponseEntity.badRequest().body(error);
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorDto> handleConstraintViolation(ConstraintViolationException ex, HttpServletRequest request) {
-        String messages = ex.getConstraintViolations().stream()
-                .map(v -> v.getPropertyPath() + ": " + v.getMessage())
-                .collect(Collectors.joining("; "));
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorDto> handleDataIntegrityViolation(DataIntegrityViolationException ex, HttpServletRequest request) {
+        String message = ex.getRootCause() != null ? ex.getRootCause().getMessage() : ex.getMessage();
 
         ErrorDto error = new ErrorDto(
                 LocalDateTime.now(),
-                HttpStatus.BAD_REQUEST.value(),
-                "Validation Error",
-                messages,
+                HttpStatus.CONFLICT.value(),
+                "Database Constraint Violation",
+                message,
                 request.getRequestURI()
         );
-        return ResponseEntity.badRequest().body(error);
-    }
 
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
 }
 
 

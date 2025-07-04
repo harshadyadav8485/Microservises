@@ -1,12 +1,14 @@
 package com.syborg.service.employee.service;
 
 import com.syborg.service.employee.dto.EmployeeDto;
+import com.syborg.service.employee.exception.EmployeeNotFoundException;
 import com.syborg.service.employee.model.Employee;
 import com.syborg.service.employee.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,6 +44,18 @@ public class EmployeeService {
     }
 
     private EmployeeDto convertToDto(Employee employee) {
+        EmployeeDto dto = new EmployeeDto();
+        dto.setId(employee.getId());
+        dto.setFirstName(employee.getFirstName());
+        dto.setLastName(employee.getLastName());
+        dto.setEmail(employee.getEmail());
+        dto.setDepartmentCode(employee.getDepartmentCode());
+        dto.setPhone(employee.getPhone());
+        return dto;
+    }
+
+    public EmployeeDto getEmployee(Long employeeId) {
+        Employee employee=employeeRepository.findById(employeeId).orElseThrow(()->new EmployeeNotFoundException("Employee Not Found Exception"));
         EmployeeDto dto = new EmployeeDto();
         dto.setId(employee.getId());
         dto.setFirstName(employee.getFirstName());

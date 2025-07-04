@@ -3,11 +3,9 @@ package com.syborg.service.department.controller;
 import com.syborg.service.department.dto.EmployeeDto;
 import com.syborg.service.department.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,5 +24,12 @@ public class DepartmentController {
     public ResponseEntity<EmployeeDto> createAndFetchEmployees() {
         EmployeeDto employeeList = departmentService.callEmployeeApi();
         return ResponseEntity.ok(employeeList);
+    }
+
+    @GetMapping("/v1")
+    public ResponseEntity<EmployeeDto> getEmployee(@RequestParam("employeeId")Long employeeId){
+        EmployeeDto employeeDto=departmentService.getEmployee(employeeId);
+        return new ResponseEntity<>(employeeDto, HttpStatus.OK);
+
     }
 }

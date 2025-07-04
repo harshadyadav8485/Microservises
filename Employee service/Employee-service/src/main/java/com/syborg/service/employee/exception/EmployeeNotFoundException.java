@@ -1,4 +1,4 @@
-package com.syborg.service.department.exception;
+package com.syborg.service.employee.exception;
 
 public class EmployeeNotFoundException extends RuntimeException{
 

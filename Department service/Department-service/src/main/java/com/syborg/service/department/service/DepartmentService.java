@@ -2,6 +2,8 @@ package com.syborg.service.department.service;
 
 import com.syborg.service.department.config.EmployeeClient;
 import com.syborg.service.department.dto.EmployeeDto;
+import com.syborg.service.department.exception.EmployeeNotFoundException;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -73,4 +75,15 @@ public class DepartmentService {
 
         return employeeList;
     }
+
+    public EmployeeDto getEmployee(Long employeeId) {
+        try {
+            return employeeClient.getEmployee(employeeId);
+        } catch (FeignException.NotFound ex) {
+            throw new EmployeeNotFoundException("Employee not found with ID: " + employeeId);
+        } catch (FeignException ex) {
+            throw new RuntimeException("Error calling employee-service: " + ex.getMessage());
+        }
+    }
+
 }

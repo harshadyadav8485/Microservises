@@ -2,6 +2,7 @@ package com.syborg.service.employee.controller;
 
 import com.syborg.service.employee.dto.EmployeeDto;
 import com.syborg.service.employee.service.EmployeeService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ public class EmployeeController {
     private  EmployeeService employeeService;
 
     @PostMapping
-    public ResponseEntity<EmployeeDto> createEmployee(@RequestBody EmployeeDto employee) {
+    public ResponseEntity<EmployeeDto> createEmployee(@Valid @RequestBody EmployeeDto employee) {
         EmployeeDto savedEmployee = employeeService.saveEmployee(employee);
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
@@ -31,4 +32,11 @@ public class EmployeeController {
         return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 
+
+    @GetMapping("/v2")
+    public ResponseEntity<EmployeeDto> getEmployee(@RequestParam("employeeId")Long employeeId){
+        EmployeeDto employeeDto=employeeService.getEmployee(employeeId);
+        return new ResponseEntity<>(employeeDto,HttpStatus.OK);
+
+    }
 }
